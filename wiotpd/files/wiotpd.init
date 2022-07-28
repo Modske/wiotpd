@@ -1,0 +1,39 @@
+#!/bin/sh /etc/rc.common
+
+USE_PROCD=1
+
+start_service() {
+        local enabled
+		local orgid
+		local typeid
+		local deviceid
+		local token
+
+        config_load 'wiotpd' 
+        config_get enabled wiotpd_sct 'enable' 
+		config_get orgid wiotpd_sct 'orgId'
+		config_get typeid wiotpd_sct 'typeId'
+		config_get deviceid wiotpd_sct 'deviceId'
+		config_get token wiotpd_sct 'auth_token'
+
+	if [ "$enabled" -eq 1 ]; then
+	    procd_open_instance
+	    procd_set_param command /usr/bin/wiotpd \
+		--orgid $orgId \
+		--typeid $typeId \
+		--deviceid $deviceId \
+		--token $token
+		procd_set_param pidfile /var/run/wiotpd.pid
+		procd_set_param file /etc/config/wiotpd
+        procd_close_instance
+	fi
+}
+
+service_triggers() {
+	procd_add_reload_trigger "wiotpd"
+}
+
+reload_service() {
+	stop
+	start
+}

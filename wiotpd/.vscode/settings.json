@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "iotp_device.h": "c",
+        "blobmsg_json.h": "c",
+        "unistd.h": "c"
+    }
+}
